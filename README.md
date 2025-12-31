@@ -80,3 +80,40 @@ Error de sintaxis: Se esperaba un número, variable o paréntesis, pero se encon
 >> Sentencia PRINT válida
 ```
 
+## 📊 Diagrama de Flujo del Compilador
+
+```mermaid
+sequenceDiagram
+    actor User as Usuario
+    participant Main as Main
+    participant Lexer as ScannerLexico
+    participant Pars as Parser
+    
+    User->>Main: 1. Introduce Código Fuente
+    
+    rect rgb(240, 248, 255)
+    Note right of Main: FASE 1: LÉXICO
+    Main->>Lexer: analizar(codigo)
+    Lexer->>Lexer: Limpiar y Tokenizar
+    Lexer-->>Main: Retorna Lista Tokens
+    end
+
+    Main->>User: Muestra Tokens
+
+    rect rgb(255, 245, 230)
+    Note right of Main: FASE 2: SINTÁCTICO
+    Main->>Pars: new Parser(tokens)
+    Main->>Pars: parse()
+    
+    loop Mientras haya tokens
+        Pars->>Pars: sentencia()
+        alt Sentencia Correcta
+            Pars-->>User: Imprime "OK"
+        else Error Sintáctico
+            Pars-->>User: Imprime Error
+            Pars->>Pars: sincronizar() (Panic Mode)
+        end
+    end
+    end
+    
+    Main-->>User: Fin del programa
